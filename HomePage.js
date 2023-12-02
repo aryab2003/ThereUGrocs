@@ -57,8 +57,9 @@ const TopCategoriesSection = styled.section`
 `;
 
 const CategoryBox = styled.div`
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: grey;
   padding: 20px;
+  oopacity: 60%;
   border-radius: 10px;
   text-align: center;
   width: 200px;
@@ -80,8 +81,8 @@ const CategoryImage = styled.img`
 const HomePage = () => {
   return (
     <Wrapper>
-      <Title>Welcome to Our Grocery Website</Title>
-      <Description>Find the freshest produce and best deals here!</Description>
+      <Title>There U Grocs:Your Go-To Grocer</Title>
+      <Description>Find the freshest products and best deals here!</Description>
       <ServicesSection>
         <ServiceBox>
           <ServiceTitle>Fresh Products</ServiceTitle>

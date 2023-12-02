@@ -1,49 +1,43 @@
-// Mock data simulating products fetched from an API
-const mockProducts = [
-  {
-    id: 1,
-    name: "Product 1",
-    imageURL: "https://via.placeholder.com/150", // Replace with actual image URLs
-    price: "$19.99",
-  },
-  {
-    id: 2,
-    name: "Product 2",
-    imageURL: "https://via.placeholder.com/150", // Replace with actual image URLs
-    price: "$29.99",
-  },
-  {
-    id: 3,
-    name: "Product 3",
-    imageURL: "https://via.placeholder.com/150", // Replace with actual image URLs
-    price: "$29.99",
-  },
-  {
-    id: 4,
-    name: "Product 4",
-    imageURL: "https://via.placeholder.com/150", // Replace with actual image URLs
-    price: "$29.99",
-  },
-  {
-    id: 5,
-    name: "Product 5",
-    imageURL: "https://via.placeholder.com/150", // Replace with actual image URLs
-    price: "$29.99",
-  },
-  {
-    id: 6,
-    name: "Product 6",
-    imageURL: "https://via.placeholder.com/150", // Replace with actual image URLs
-    price: "$29.99",
-  },
-];
+const fetchFoodImages = async () => {
+  const API_KEY = "";
+  try {
+    const response = await fetch("");
+    if (!response.ok) {
+      throw new Error("Failed to fetch");
+    }
+    const data = await response.json();
+    return data; // Assuming the API returns an array of image URLs
+  } catch (error) {
+    console.error("Error fetching food images:", error);
+    return [];
+  }
+};
 
-// Simulated fetch function (similar to an API call)
+const generateMockProducts = async () => {
+  const mockProducts = [];
+  const foodImages = await fetchFoodImages(); // Fetch food images from your API
+
+  for (let i = 1; i <= 100; i++) {
+    const randomIndex = Math.floor(Math.random() * foodImages.length);
+    const randomImage = foodImages[randomIndex];
+    mockProducts.push({
+      id: i,
+      name: `Product ${i}`,
+      imageURL: randomImage,
+      price: (Math.random() * 100).toFixed(2),
+    });
+  }
+
+  return mockProducts;
+};
+
+const mockProducts = await generateMockProducts(); // Call the function to get mock products
+
 const fetchProductsFromAPI = () => {
   return new Promise((resolve) => {
     setTimeout(() => {
-      resolve(mockProducts); // Simulated API response with product data
-    }, 1000); // Simulating a delay as if fetching from a server
+      resolve(mockProducts);
+    }, 1000);
   });
 };
 

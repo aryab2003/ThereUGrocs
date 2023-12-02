@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled, { createGlobalStyle } from "styled-components";
 import fetchProductsFromAPI from "./fetchProductsFromAPI";
 import { Link } from "react-router-dom";
+
 const GlobalStyle = createGlobalStyle`
   body {
     background-color: #45103E;
@@ -192,12 +193,38 @@ const LogoutButton = styled.button`
     background-color: #d63031;
   }
 `;
+
+const SearchContainer = styled.div`
+  margin: 20px auto;
+  width: 80%;
+  max-width: 600px;
+`;
+
+const SearchInput = styled.input`
+  width: 100%;
+  padding: 12px;
+  border-radius: 25px;
+  border: 2px solid #ddd;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.3s ease;
+
+  &::placeholder {
+    color: #aaa;
+  }
+
+  &:focus {
+    border-color: #ff6b81;
+  }
+`;
+
 const GroceryWebsite = () => {
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
   const [loggedIn, setLoggedIn] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     fetchProductsFromAPI().then((data) => {
@@ -208,7 +235,9 @@ const GroceryWebsite = () => {
   const addToCart = (product) => {
     setCart([...cart, product]);
   };
-
+  const filteredProducts = products.filter((product) =>
+    product.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
   const handleLogin = (e) => {
     e.preventDefault();
 
@@ -257,13 +286,20 @@ const GroceryWebsite = () => {
 
         <LogoutButton onClick={handleLogout}>Logout</LogoutButton>
       </Header>
-
+      <SearchContainer>
+        <SearchInput
+          type="text"
+          placeholder="Search products..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </SearchContainer>
       <ProductGrid>
-        {products.map((product) => (
+        {filteredProducts.map((product) => (
           <ProductCard key={product.id}>
             <ProductImage src={product.imageURL} alt={product.name} />
             <ProductName>{product.name}</ProductName>
-            <ProductPrice>{product.price}</ProductPrice>
+            <ProductPrice>${product.price}</ProductPrice>
             <AddToCartButton onClick={() => addToCart(product)}>
               Add to Cart
             </AddToCartButton>
@@ -274,13 +310,15 @@ const GroceryWebsite = () => {
       <CartContainer>
         <TotalPrice>Total: ${isNaN(totalPrice) ? "0" : totalPrice}</TotalPrice>
 
-        <CheckoutButton>Checkout</CheckoutButton>
+        <Link to="/proceed-to-pay">
+          <CheckoutButton>Checkout</CheckoutButton>
+        </Link>
       </CartContainer>
 
       <Footer>
         <p>Follow us:</p>
-        <FooterLink href="#">Facebook</FooterLink>
-        <FooterLink href="#">Twitter</FooterLink>
+        <FooterLink href="https://facebook.com">Facebook</FooterLink>
+        <FooterLink href="https://twitter.com">Twitter</FooterLink>
 
         <ContactInfo>Contact us at: thereugrocs@gmail.com</ContactInfo>
       </Footer>

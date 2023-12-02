@@ -3,6 +3,9 @@ import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import HomePage from "./HomePage";
 import CartPage from "./Cart";
 import GroceryWebsite from "./GroceryWebsite";
+import ProceedToPayPage from "./ProceedToPayPage";
+import PaymentPage from "./Payment";
+
 import styled from "styled-components";
 
 const Navigation = styled.nav`
@@ -69,6 +72,8 @@ const App = () => {
             path="/products"
             element={<GroceryWebsite navLinks={navLinks} />}
           />
+          <Route path="/proceed-to-pay" element={<ProceedToPayPage />} />
+          <Route path="/payment" element={<PaymentPage />} />
         </Routes>
       </div>
     </Router>
