@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled, { createGlobalStyle } from "styled-components";
 import fetchProductsFromAPI from "./fetchProductsFromAPI";
 import { Link } from "react-router-dom";
+import Cart from "./Cart";
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -36,12 +37,6 @@ const Logo = styled.h1`
   @media screen and (min-width: 768px) {
     wrap-direction: row;
   }
-`;
-
-const ProductGrid = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
 `;
 
 const ProductCard = styled.div`
@@ -217,7 +212,29 @@ const SearchInput = styled.input`
     border-color: #ff6b81;
   }
 `;
+const Spinner = styled.div`
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-top: 4px solid #333;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  color: black;
+  animation: spin 10s linear infinite;
+  margin: 20px auto;
 
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+`;
+const Message = styled.p`
+  text-align: center;
+  color: green;
+`;
 const GroceryWebsite = () => {
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
@@ -225,11 +242,21 @@ const GroceryWebsite = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [displayedItems, setDisplayedItems] = useState(20);
+  const [showMessage, setShowMessage] = useState(false);
+  const [enableScroll, setEnableScroll] = useState(true);
 
   useEffect(() => {
     fetchProductsFromAPI().then((data) => {
       setProducts(data);
     });
+  }, []);
+
+  useEffect(() => {
+    const storedLoggedIn = localStorage.getItem("loggedIn");
+    if (storedLoggedIn === "true") {
+      setLoggedIn(true);
+    }
   }, []);
 
   const addToCart = (product) => {
@@ -240,9 +267,9 @@ const GroceryWebsite = () => {
   );
   const handleLogin = (e) => {
     e.preventDefault();
-
     if (username === "example" && password === "password") {
       setLoggedIn(true);
+      localStorage.setItem("loggedIn", "true");
     } else {
       alert("Invalid credentials. Please try again.");
     }
@@ -257,6 +284,22 @@ const GroceryWebsite = () => {
     const productPrice = parseFloat(product.price);
     return isNaN(productPrice) ? total : total + productPrice;
   }, 0);
+
+  const ProductGrid = styled.div`
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    overflow-y: ${enableScroll ? "scroll" : "hidden"}; /* Control scrolling */
+  `;
+  useEffect(() => {
+    if (filteredProducts.length > 20) {
+      setEnableScroll(false); // Disable scrolling after 20 items are displayed
+      setTimeout(() => {
+        setEnableScroll(true); // Re-enable scrolling after 4 seconds
+      }, 4000);
+    }
+  }, [filteredProducts]);
+
   if (!loggedIn) {
     return (
       <PageContainer>
@@ -300,12 +343,19 @@ const GroceryWebsite = () => {
             <ProductImage src={product.imageURL} alt={product.name} />
             <ProductName>{product.name}</ProductName>
             <ProductPrice>${product.price}</ProductPrice>
-            <AddToCartButton onClick={() => addToCart(product)}>
-              Add to Cart
-            </AddToCartButton>
+            <Link to="/cart">
+              <AddToCartButton>Add to Cart</AddToCartButton>
+            </Link>
           </ProductCard>
         ))}
       </ProductGrid>
+      {filteredProducts.length > displayedItems && (
+        <>
+          <Message>More items available</Message>
+          <Spinner />
+        </>
+      )}
+      <Cart cartItems={cart} />
 
       <CartContainer>
         <TotalPrice>Total: ${isNaN(totalPrice) ? "0" : totalPrice}</TotalPrice>
