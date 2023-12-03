@@ -1,7 +1,9 @@
 const fetchFoodImages = async () => {
-  const API_KEY = "";
+  const API_KEY = "b0c2e993fbmsh15f6c675a933a3dp105740jsn29b53efc4405";
   try {
-    const response = await fetch("");
+    const response = await fetch(
+      "https://restaurants222.p.rapidapi.com/currencies"
+    );
     if (!response.ok) {
       throw new Error("Failed to fetch");
     }

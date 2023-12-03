@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import HomePage from "./HomePage";
-import CartPage from "./Cart";
+import Profile from "./Profile";
 import GroceryWebsite from "./GroceryWebsite";
 import ProceedToPayPage from "./ProceedToPayPage";
 import PaymentPage from "./Payment";
@@ -47,8 +47,10 @@ const App = () => {
 
   const navLinks = [
     { to: "/", label: "Home", path: "/" },
-    { to: "/cart", label: "Cart", path: "/cart" },
+
     { to: "/products", label: "Products", path: "/products" },
+
+    { to: "/profile", label: "Profile", path: "/profile" },
   ];
 
   return (
@@ -67,11 +69,12 @@ const App = () => {
         </Navigation>
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/cart" element={<CartPage />} />
+
           <Route
             path="/products"
             element={<GroceryWebsite navLinks={navLinks} />}
           />
+          <Route path="/profile" element={<Profile />} />
           <Route path="/proceed-to-pay" element={<ProceedToPayPage />} />
           <Route path="/payment" element={<PaymentPage />} />
         </Routes>

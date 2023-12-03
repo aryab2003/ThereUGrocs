@@ -3,6 +3,8 @@ import styled, { createGlobalStyle } from "styled-components";
 import fetchProductsFromAPI from "./fetchProductsFromAPI";
 import { Link } from "react-router-dom";
 import Cart from "./Cart";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -245,6 +247,7 @@ const GroceryWebsite = () => {
   const [displayedItems, setDisplayedItems] = useState(20);
   const [showMessage, setShowMessage] = useState(false);
   const [enableScroll, setEnableScroll] = useState(true);
+  const [disabledButtons, setDisabledButtons] = useState([]);
 
   useEffect(() => {
     fetchProductsFromAPI().then((data) => {
@@ -259,12 +262,25 @@ const GroceryWebsite = () => {
     }
   }, []);
 
-  const addToCart = (product) => {
-    setCart([...cart, product]);
+  const addToCart = (product, index) => {
+    if (!disabledButtons[index]) {
+      setCart([...cart, product]);
+      setDisabledButtons((prev) => {
+        const newDisabledButtons = [...prev];
+        newDisabledButtons[index] = true;
+        return newDisabledButtons;
+      });
+      toast.success(`${product.name} added to cart!`, {
+        position: toast.POSITION.BOTTOM_RIGHT,
+        autoClose: 3000,
+      });
+    }
   };
+
   const filteredProducts = products.filter((product) =>
     product.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
   const handleLogin = (e) => {
     e.preventDefault();
     if (username === "example" && password === "password") {
@@ -338,14 +354,17 @@ const GroceryWebsite = () => {
         />
       </SearchContainer>
       <ProductGrid>
-        {filteredProducts.map((product) => (
+        {filteredProducts.map((product, index) => (
           <ProductCard key={product.id}>
             <ProductImage src={product.imageURL} alt={product.name} />
             <ProductName>{product.name}</ProductName>
             <ProductPrice>${product.price}</ProductPrice>
-            <Link to="/cart">
-              <AddToCartButton>Add to Cart</AddToCartButton>
-            </Link>
+            <AddToCartButton
+              onClick={() => addToCart(product, index)}
+              disabled={disabledButtons[index]}
+            >
+              {disabledButtons[index] ? "Added" : "Add to Cart"}
+            </AddToCartButton>
           </ProductCard>
         ))}
       </ProductGrid>
@@ -372,6 +391,7 @@ const GroceryWebsite = () => {
 
         <ContactInfo>Contact us at: thereugrocs@gmail.com</ContactInfo>
       </Footer>
+      <ToastContainer />
     </div>
   );
 };
