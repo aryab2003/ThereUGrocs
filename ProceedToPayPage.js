@@ -7,6 +7,8 @@ const ProceedContainer = styled.div`
   font-family: "Roboto", sans-serif;
   padding: 20px;
   text-align: center;
+  background-color: #ffff99;
+  min-height: 100vh;
 `;
 
 const Title = styled.h2`

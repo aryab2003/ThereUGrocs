@@ -1,71 +1,137 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 
-const FullPage = styled.div`
-  width: 100%;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
-`;
-
 const ProfileContainer = styled.div`
-  width: 100%;
-  max-width: 800px;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+  min-height: 100vh;
+  min-width: 100vw;
+  display: flex;
+`;
+
+const Header = styled.header`
+  background-color: #333;
+  color: white;
   padding: 20px;
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-`;
-
-const ProfileHeader = styled.header`
   text-align: center;
-  margin-bottom: 30px;
+  width: 50%;
+  max-height: 600px;
+  opacity: 90%;
+
+  @media (max-width: 600px) {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  @media (max-width: 300px) {
+    padding: 16px;
+    font-size: 14px;
+    min-width: 100vh;
+  }
 `;
 
-const ProfileImage = styled.img`
+const LeftPane = styled.div`
+  background-color: #333;
+  color: white;
+  width: 200px;
+  max-height: 640px;
+  transition: transform 0.3s ease-in-out;
+  transform: ${({ isOpen }) =>
+    isOpen ? "translateX(0)" : "translateX(-100%)"};
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  li {
+    margin-bottom: 10px;
+  }
+
+  button {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: background 0.3s ease;
+    text-align: left;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+    max-width: 200px;
+  }
+`;
+
+const Main = styled.main`
+  padding: 20px;
+
+  @media (max-width: 768px) {
+    padding: 10px;
+  }
+`;
+
+const ProfileDetails = styled.div`
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  @media (max-width: 768px) {
+    text-align: center;
+  }
+`;
+
+const ProfilePicture = styled.img`
   width: 150px;
   height: 150px;
   border-radius: 50%;
-  object-fit: cover;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-  animation: rotateImage 5s linear infinite;
-  transition: transform 0.3s ease-in-out;
+  margin-right: 20px;
 
-  @keyframes rotateImage {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
+  @media (max-width: 768px) {
+    width: 100px;
+    height: 100px;
   }
+`;
+
+const UserInfo = styled.div`
+  h2 {
+    margin-bottom: 10px;
+  }
+`;
+
+const UserBio = styled.div`
+  margin-top: 20px;
+`;
+
+const ToggleButton = styled.button`
+  background-color: #333;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 
   &:hover {
-    transform: scale(1.1);
+    background-color: #555;
   }
 `;
 
-const ProfileInfo = styled.div`
-  text-align: center;
-  color: #333;
-`;
-
-const ProfileName = styled.h1`
-  font-size: 2rem;
-  margin-bottom: 10px;
-`;
-
-const ProfileDetails = styled.p`
-  font-size: 1.2rem;
-  color: #666;
-`;
 const AccountOptions = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
   margin-top: 20px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 `;
 
 const AccountLabel = styled.label`
@@ -124,114 +190,24 @@ const AccountStatus = styled.span`
   color: #333;
 `;
 
-const LeftPane = styled.div`
-  width: 20%;
-  height: 60%;
-  margin-top: 200px;
-  margin-left: 15px;
-  background-color: #f9f9f9;
-  padding: 20px;
-  border-radius: 0 10px 10px 0;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-  position: fixed;
-  top: 0;
-  left: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  @media (max-width: 768px) {
-    left: 0px;
-  }
-`;
-
-const OptionList = styled.ul`
-  list-style: none;
-  padding: 0;
-  margin: 0;
-
-  li {
-    margin-bottom: 15px;
-
-    button {
-      padding: 3px 2px;
-      border: none;
-      border-radius: 5px;
-      background-color: #4caf50;
-      color: #fff;
-      cursor: pointer;
-      font-size: 1.2rem;
-      transition: background-color 0.3s;
-
-      &:hover {
-        background-color: #45a049;
-      }
-    }
-
-    h3 {
-      margin-bottom: 10px;
-      font-size: 1.5rem;
-      color: #333;
-    }
-
-    input {
-      width: calc(100% - 40px);
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      margin-bottom: 10px;
-      font-size: 1rem;
-
-      &:focus {
-        outline: none;
-        border-color: #2196f3;
-      }
-    }
-
-    p {
-      font-size: 1rem;
-      color: #666;
-    }
-  }
-`;
-const PrivacySettings = styled.div`
-  display: ${({ isVisible }) => (isVisible ? "block" : "none")};
-  margin-top: 20px;
-  font-size: 1.2rem;
+const ProfileInfo = styled.div`
+  text-align: center;
   color: #333;
-  overflow: auto; /* Add overflow to enable scrolling */
-  max-height: 150px;
 `;
 
-const DropdownButton = styled.button`
-  padding: 10px 20px;
-  margin-top: -600px;
-  margin-right: 100px;
-  border: none;
-  border-radius: 5px;
-  background-color: #4caf50;
-  color: #fff;
-  cursor: pointer;
-  font-size: 1.2rem;
-  transition: background-color 0.3s;
-
-  &:hover {
-    background-color: #45a049;
-  }
-
+const ProfileName = styled.h1`
+  font-size: 2rem;
+  margin-bottom: 10px;
   @media (max-width: 768px) {
-    margin-right: 0;
+    font-size: 1.5rem;
   }
 `;
 
-const Profile = () => {
+const ProfilePage = () => {
+  const [isPaneOpen, setIsPaneOpen] = useState(false);
   const [isAccountEnabled, setIsAccountEnabled] = useState(true);
+  const [passwordChanged, setPasswordChanged] = useState(false);
   const [isEditingProfile, setIsEditingProfile] = useState(false);
-  const [leftPaneVisible, setLeftPaneVisible] = useState(false);
-
-  const toggleLeftPane = () => {
-    setLeftPaneVisible(!leftPaneVisible);
-  };
 
   const [profileData, setProfileData] = useState({
     name: "Joanna Kims",
@@ -239,49 +215,6 @@ const Profile = () => {
     location: "Indiana, USA",
   });
   const [editedProfileData, setEditedProfileData] = useState({});
-
-  const [changePasswordData, setChangePasswordData] = useState({
-    currentPassword: "",
-    newPassword: "",
-    confirmNewPassword: "",
-  });
-  const [passwordMismatch, setPasswordMismatch] = useState(false);
-
-  // ... (Handle functions for editing profile remain the same)
-
-  const handlePasswordInputChange = (e) => {
-    const { name, value } = e.target;
-    setChangePasswordData({
-      ...changePasswordData,
-      [name]: value,
-    });
-    setPasswordMismatch(false); // Reset password mismatch error on input change
-  };
-
-  const handleChangePassword = () => {
-    const { currentPassword, newPassword, confirmNewPassword } =
-      changePasswordData;
-
-    // Check if new password matches the confirmation
-    if (newPassword !== confirmNewPassword) {
-      setPasswordMismatch(true);
-      return;
-    }
-
-    // Here you would typically perform an API call to change the password
-    // For demonstration, we'll just update the state
-    setProfileData({ ...profileData, password: newPassword }); // Update password
-    setChangePasswordData({
-      currentPassword: "",
-      newPassword: "",
-      confirmNewPassword: "",
-    }); // Reset password fields after changing
-  };
-
-  const handleAccountToggle = () => {
-    setIsAccountEnabled(!isAccountEnabled);
-  };
-
   const handleEditProfile = () => {
     setIsEditingProfile(true);
     setEditedProfileData({ ...profileData });
@@ -307,71 +240,44 @@ const Profile = () => {
       [name]: value !== "" ? value : profileData[name], // Use profileData if value is empty
     });
   };
-  const [showPrivacySettings, setShowPrivacySettings] = useState(false);
 
-  const togglePrivacySettings = () => {
-    setShowPrivacySettings(!showPrivacySettings);
+  const handleAccountToggle = () => {
+    setIsAccountEnabled(!isAccountEnabled);
+  };
+
+  const handleChangePassword = () => {
+    setPasswordChanged(true);
+  };
+
+  const togglePane = () => {
+    setIsPaneOpen(!isPaneOpen);
   };
 
   return (
-    <FullPage>
-      <DropdownButton onClick={toggleLeftPane}>
-        {leftPaneVisible ? "Hide" : "Show"} Menu
-      </DropdownButton>
-      {leftPaneVisible && (
-        <LeftPane>
-          <OptionList>
-            <li>
-              <button onClick={handleEditProfile}>Edit Profile</button>
-            </li>
-            <li>
-              <button onClick={togglePrivacySettings}>
-                Show Privacy Settings
-              </button>
-              <PrivacySettings isVisible={showPrivacySettings}>
-                <p>
-                  Customize profile, third-party access, and account management
-                  for a better privacy.
-                </p>
-              </PrivacySettings>
-            </li>
-            <li>
-              <h3>Change Password</h3>
-              <input
-                type="password"
-                name="currentPassword"
-                value={changePasswordData.currentPassword}
-                placeholder="Current Password"
-                onChange={handlePasswordInputChange}
-              />
-              <input
-                type="password"
-                name="newPassword"
-                value={changePasswordData.newPassword}
-                placeholder="New Password"
-                onChange={handlePasswordInputChange}
-              />
-              <input
-                type="password"
-                name="confirmNewPassword"
-                value={changePasswordData.confirmNewPassword}
-                placeholder="Confirm New Password"
-                onChange={handlePasswordInputChange}
-              />
-              {passwordMismatch && <p>Passwords do not match</p>}
-              <button onClick={handleChangePassword}>Change Password</button>
-            </li>
-            <li>
-              <button>Logout</button>
-            </li>
-          </OptionList>
-        </LeftPane>
-      )}
-      <ProfileContainer>
-        <ProfileHeader>
-          <ProfileImage
-            src="https://i.guim.co.uk/img/media/437adb05d43fd4f7aba3dfbab5200a6776775557/496_0_748_935/master/748.jpg?width=445&dpr=1&s=none"
-            alt="Profile Picture"
+    <ProfileContainer>
+      <LeftPane isOpen={isPaneOpen}>
+        <ul>
+          <li>
+            <button onClick={handleChangePassword}>Change Password</button>
+          </li>
+          <li>
+            <ToggleButton onClick={handleEditProfile}>
+              Edit Profile
+            </ToggleButton>
+          </li>
+        </ul>
+      </LeftPane>
+
+      <Header>
+        <h1>Your Profile</h1>
+        <ToggleButton onClick={togglePane}>Toggle Pane</ToggleButton>
+      </Header>
+
+      <Main>
+        <ProfileDetails>
+          <ProfilePicture
+            src="https://in.bmscdn.com/iedb/artist/images/website/poster/large/kiara-advani-1043272-1655467015.jpg"
+            alt="Profile"
           />
           <ProfileInfo>
             {isEditingProfile ? (
@@ -406,8 +312,8 @@ const Profile = () => {
                   }
                   onChange={handleInputChange}
                 />
-                <button onClick={handleCancelEdit}>Cancel</button>
-                <button onClick={handleSaveProfile}>Save</button>
+                <ToggleButton onClick={handleCancelEdit}>Cancel</ToggleButton>
+                <ToggleButton onClick={handleSaveProfile}>Save</ToggleButton>
               </div>
             ) : (
               <div>
@@ -416,31 +322,41 @@ const Profile = () => {
                 <ProfileDetails>
                   Location: {profileData.location}
                 </ProfileDetails>
-                <button onClick={handleEditProfile}>Edit Profile</button>
+                <ToggleButton onClick={handleEditProfile}>
+                  Edit Profile
+                </ToggleButton>
               </div>
             )}
           </ProfileInfo>
-        </ProfileHeader>
-        <section>
-          <AccountOptions>
-            <AccountLabel>Account Status:</AccountLabel>
-            <ToggleSwitch>
-              <input
-                type="checkbox"
-                id="accountToggle"
-                checked={isAccountEnabled}
-                onChange={handleAccountToggle}
-              />
-              <ToggleSlider htmlFor="accountToggle" />
-            </ToggleSwitch>
-            <AccountStatus>
-              {isAccountEnabled ? "Active" : "Disabled"}
-            </AccountStatus>
-          </AccountOptions>
-        </section>
-      </ProfileContainer>
-    </FullPage>
+        </ProfileDetails>
+        <UserBio>
+          <h2>Bio</h2>
+          <p>
+            Jane is an avid traveler and passionate photographer. Her adventures
+            have taken her across continents, capturing breathtaking landscapes
+            and diverse cultures. She believes in the power of storytelling
+            through images and uses her photography to inspire others to explore
+            the world.
+          </p>
+        </UserBio>
+        <AccountOptions>
+          <AccountLabel>Account Status:</AccountLabel>
+          <ToggleSwitch>
+            <input
+              type="checkbox"
+              id="accountToggle"
+              checked={isAccountEnabled}
+              onChange={handleAccountToggle}
+            />
+            <ToggleSlider htmlFor="accountToggle" />
+          </ToggleSwitch>
+          <AccountStatus>
+            {isAccountEnabled ? "Active" : "Disabled"}
+          </AccountStatus>
+        </AccountOptions>
+      </Main>
+    </ProfileContainer>
   );
 };
 
-export default Profile;
+export default ProfilePage;

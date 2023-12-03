@@ -19,6 +19,10 @@ const Navigation = styled.nav`
   &:hover {
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
   }
+
+  @media (max-width: 300px) {
+    min-width: 100vh;
+  }
 `;
 
 const NavList = styled.ul`

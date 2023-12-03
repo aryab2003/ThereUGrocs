@@ -7,6 +7,8 @@ const PaymentContainer = styled.div`
   font-family: "Roboto", sans-serif;
   padding: 20px;
   text-align: center;
+  background-color: #ffff99;
+  min-height: 100vh;
 `;
 
 const Title = styled.h2`
@@ -49,7 +51,7 @@ const PaymentPage = () => {
         <>
           <PaymentInfo>
             <h3>Scan the QR code to complete your payment</h3>
-            <QRCode value="Aryaisthebest" />
+            <QRCode value="https://business.paytm.com/payment-gateway" />
           </PaymentInfo>
           <PaymentInstructions>
             <p>
