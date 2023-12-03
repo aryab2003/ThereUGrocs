@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import Cart from "./Cart";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+//import firebase from "firebase/app";
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -233,12 +234,20 @@ const Message = styled.p`
 const GroceryWebsite = () => {
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
-
   const [searchTerm, setSearchTerm] = useState("");
   const [displayedItems, setDisplayedItems] = useState(20);
   const [showMessage, setShowMessage] = useState(false);
   const [enableScroll, setEnableScroll] = useState(true);
   const [disabledButtons, setDisabledButtons] = useState([]);
+
+  /*const addProductToFirestore = async (dataToAdd) => {
+    try {
+      const firestore = firebase.firestore();
+      await firestore.collection("products").add(dataToAdd);
+    } catch (error) {
+      console.error("Error adding document:", error);
+    }
+  };*/
 
   useEffect(() => {
     fetchProductsFromAPI().then((data) => {
@@ -254,6 +263,7 @@ const GroceryWebsite = () => {
         newDisabledButtons[index] = true;
         return newDisabledButtons;
       });
+      // addProductToFirestore(product);
       toast.success(`${product.name} added to cart!`, {
         position: toast.POSITION.BOTTOM_RIGHT,
         autoClose: 3000,
@@ -333,7 +343,6 @@ const GroceryWebsite = () => {
       <Footer>
         <FooterContent>
           <FooterLink href="#">About Us</FooterLink>
-
           <FooterLink href="#">Contact</FooterLink>
           <FooterLink href="#">Privacy Policy</FooterLink>
           <FooterLink href="#">Terms of Service</FooterLink>
@@ -353,6 +362,8 @@ const GroceryWebsite = () => {
             alt="Instagram Logo"
           />
         </SocialIcons>
+        <ContactInfo>All Rights Reserved</ContactInfo>
+        <ContactInfo>@2023</ContactInfo>
       </Footer>
       <ToastContainer />
     </div>
