@@ -122,17 +122,21 @@ const CheckoutButton = styled.button`
     background-color: #219653;
   }
 `;
+
 const Footer = styled.footer`
   background-color: #333;
   color: #fff;
   padding: 20px;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 const FooterLink = styled.a`
   color: #fff;
   text-decoration: none;
-  margin: 0 10px;
+  margin: 5px;
   transition: color 0.3s ease;
 
   &:hover {
@@ -140,55 +144,44 @@ const FooterLink = styled.a`
   }
 `;
 
+const Divider = styled.hr`
+  width: 80%;
+  margin: 10px 0;
+  border: none;
+  border-top: 1px solid #fff;
+`;
+
+const SocialIcons = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+
+  img {
+    fill: #fff;
+    width: 20px;
+    height: 20px;
+    margin: 0 5px;
+    transition: fill 0.3s ease;
+
+    &:hover {
+      fill: #ff6b81;
+    }
+  }
+`;
+
+const FooterContent = styled.div`
+  margin-top: 10px;
+`;
+
 const ContactInfo = styled.p`
   margin-top: 10px;
 `;
 
-const LoginForm = styled.form`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  border: 1px solid #ccc;
-  padding: 20px;
-  width: 300px;
-`;
-
-const LoginInput = styled.input`
-  margin-bottom: 10px;
-  padding: 8px;
-`;
-
-const LoginButton = styled.button`
-  padding: 8px 16px;
-  background-color: #27ae60;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-
-  &:hover {
-    background-color: #219653;
-  }
-`;
 const PageContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-`;
-const LogoutButton = styled.button`
-  padding: 10px 20px;
-  background-color: #ff6b81;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-
-  &:hover {
-    background-color: #d63031;
-  }
 `;
 
 const SearchContainer = styled.div`
@@ -240,9 +233,7 @@ const Message = styled.p`
 const GroceryWebsite = () => {
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
-  const [loggedIn, setLoggedIn] = useState(false);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+
   const [searchTerm, setSearchTerm] = useState("");
   const [displayedItems, setDisplayedItems] = useState(20);
   const [showMessage, setShowMessage] = useState(false);
@@ -253,13 +244,6 @@ const GroceryWebsite = () => {
     fetchProductsFromAPI().then((data) => {
       setProducts(data);
     });
-  }, []);
-
-  useEffect(() => {
-    const storedLoggedIn = localStorage.getItem("loggedIn");
-    if (storedLoggedIn === "true") {
-      setLoggedIn(true);
-    }
   }, []);
 
   const addToCart = (product, index) => {
@@ -281,21 +265,6 @@ const GroceryWebsite = () => {
     product.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleLogin = (e) => {
-    e.preventDefault();
-    if (username === "example" && password === "password") {
-      setLoggedIn(true);
-      localStorage.setItem("loggedIn", "true");
-    } else {
-      alert("Invalid credentials. Please try again.");
-    }
-  };
-
-  const handleLogout = () => {
-    setLoggedIn(false);
-    setUsername("");
-    setPassword("");
-  };
   const totalPrice = cart.reduce((total, product) => {
     const productPrice = parseFloat(product.price);
     return isNaN(productPrice) ? total : total + productPrice;
@@ -316,34 +285,11 @@ const GroceryWebsite = () => {
     }
   }, [filteredProducts]);
 
-  if (!loggedIn) {
-    return (
-      <PageContainer>
-        <LoginForm onSubmit={handleLogin}>
-          <LoginInput
-            type="text"
-            placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-          <LoginInput
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <LoginButton type="submit">Login</LoginButton>
-        </LoginForm>
-      </PageContainer>
-    );
-  }
   return (
     <div>
       <GlobalStyle />
       <Header>
         <Logo>There U Grocs</Logo>
-
-        <LogoutButton onClick={handleLogout}>Logout</LogoutButton>
       </Header>
       <SearchContainer>
         <SearchInput
@@ -385,11 +331,28 @@ const GroceryWebsite = () => {
       </CartContainer>
 
       <Footer>
-        <p>Follow us:</p>
-        <FooterLink href="https://facebook.com">Facebook</FooterLink>
-        <FooterLink href="https://twitter.com">Twitter</FooterLink>
+        <FooterContent>
+          <FooterLink href="#">About Us</FooterLink>
 
-        <ContactInfo>Contact us at: thereugrocs@gmail.com</ContactInfo>
+          <FooterLink href="#">Contact</FooterLink>
+          <FooterLink href="#">Privacy Policy</FooterLink>
+          <FooterLink href="#">Terms of Service</FooterLink>
+        </FooterContent>
+        <Divider />
+        <SocialIcons>
+          <img
+            src="https://workingwithdog.com/wp-content/uploads/2016/05/new_instagram_logo.jpg"
+            alt="Instagram Logo"
+          />
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/6/6c/Facebook_Logo_2023.png"
+            alt="Instagram Logo"
+          />
+          <img
+            src="https://freelogopng.com/images/all_img/1690643591twitter-x-logo-png.png"
+            alt="Instagram Logo"
+          />
+        </SocialIcons>
       </Footer>
       <ToastContainer />
     </div>

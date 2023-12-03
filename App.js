@@ -9,8 +9,16 @@ import PaymentPage from "./Payment";
 import styled from "styled-components";
 
 const Navigation = styled.nav`
-  background-color: #f5f5f5;
-  padding: 10px 0;
+  background-color: black;
+  padding: 25px 0;
+  display: flex;
+  justify-content: center;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.7s ease;
+
+  &:hover {
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  }
 `;
 
 const NavList = styled.ul`
@@ -28,7 +36,7 @@ const NavItem = styled.li`
 
 const NavLink = styled(Link)`
   text-decoration: none;
-  color: #333;
+  color: #fff;
   font-weight: bold;
   padding: 8px 12px;
   border-radius: 5px;
@@ -37,6 +45,8 @@ const NavLink = styled(Link)`
   &:hover {
     background-color: #ff6b81;
     color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
   }
 `;
 
@@ -47,9 +57,7 @@ const App = () => {
 
   const navLinks = [
     { to: "/", label: "Home", path: "/" },
-
     { to: "/products", label: "Products", path: "/products" },
-
     { to: "/profile", label: "Profile", path: "/profile" },
   ];
 
@@ -69,7 +77,6 @@ const App = () => {
         </Navigation>
         <Routes>
           <Route path="/" element={<HomePage />} />
-
           <Route
             path="/products"
             element={<GroceryWebsite navLinks={navLinks} />}

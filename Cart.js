@@ -5,8 +5,8 @@ const CartContainer = styled.div`
   background-color: #f5f5f5;
   padding: 20px;
   border-radius: 10px;
-  color: black; /* Set font color to black */
-  font-family: "Arial", sans-serif; /* Use Arial font or any preferred font */
+  color: black;
+  font-family: "Arial", sans-serif;
 `;
 
 const CartItem = styled.div`
@@ -20,7 +20,7 @@ const Cart = ({ cartItems }) => {
   return (
     <CartContainer>
       {cartItems && cartItems.length > 0 ? (
-        <h2>You Might Like To Come Back To Them Later</h2>
+        <h2>Your Cart</h2>
       ) : (
         <h2>Loading Wonders For You</h2>
       )}
