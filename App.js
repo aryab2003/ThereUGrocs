@@ -1,6 +1,13 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Link,
+  Navigate,
+} from "react-router-dom";
 import HomePage from "./HomePage";
+import LoginPage from "./Login";
 import Profile from "./Profile";
 import GroceryWebsite from "./GroceryWebsite";
 import ProceedToPayPage from "./ProceedToPayPage";
@@ -55,6 +62,31 @@ const NavLink = styled(Link)`
 `;
 
 const App = () => {
+  const [loggedIn, setLoggedIn] = React.useState(false);
+
+  // Check localStorage for login status on app load
+  React.useEffect(() => {
+    const storedLoggedIn = localStorage.getItem("loggedIn");
+    if (storedLoggedIn === "true") {
+      setLoggedIn(true);
+    }
+  }, []);
+
+  const handleLogin = (username, password) => {
+    // Check user credentials (replace this with your authentication logic)
+    if (username === "user" && password === "password") {
+      setLoggedIn(true);
+      localStorage.setItem("loggedIn", "true");
+    } else {
+      alert("Invalid credentials. Please try again.");
+    }
+  };
+
+  const handleLogout = () => {
+    setLoggedIn(false);
+    localStorage.removeItem("loggedIn");
+  };
+
   const navigateTo = (path) => {
     window.history.pushState({}, null, path);
   };
@@ -80,14 +112,49 @@ const App = () => {
           </NavList>
         </Navigation>
         <Routes>
-          <Route path="/" element={<HomePage />} />
+          <Route
+            exact
+            path="/"
+            element={
+              loggedIn ? (
+                <Navigate to="/home" />
+              ) : (
+                <LoginPage onLogin={handleLogin} />
+              )
+            }
+          />
+          <Route
+            path="/home"
+            element={
+              loggedIn ? (
+                <HomePage onLogout={handleLogout} />
+              ) : (
+                <Navigate to="/" />
+              )
+            }
+          />
           <Route
             path="/products"
-            element={<GroceryWebsite navLinks={navLinks} />}
+            element={
+              loggedIn ? (
+                <GroceryWebsite navLinks={navLinks} />
+              ) : (
+                <Navigate to="/" />
+              )
+            }
           />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/proceed-to-pay" element={<ProceedToPayPage />} />
-          <Route path="/payment" element={<PaymentPage />} />
+          <Route
+            path="/profile"
+            element={loggedIn ? <Profile /> : <Navigate to="/" />}
+          />
+          <Route
+            path="/proceed-to-pay"
+            element={loggedIn ? <ProceedToPayPage /> : <Navigate to="/" />}
+          />
+          <Route
+            path="/payment"
+            element={loggedIn ? <PaymentPage /> : <Navigate to="/" />}
+          />
         </Routes>
       </div>
     </Router>

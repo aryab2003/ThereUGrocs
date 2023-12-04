@@ -14,9 +14,8 @@ const fetchAllProductsFromAPI = async (totalPages = 10) => {
         page: pageNumber,
       },
       headers: {
-        "X-RapidAPI-Key": "2c196108a0msha295f3b1da648b7p1839d2jsnafec703275ae", // Replace with your API key
+        "X-RapidAPI-Key": "2c196108a0msha295f3b1da648b7p1839d2jsnafec703275ae",
         "X-RapidAPI-Host": "edamam-food-and-grocery-database.p.rapidapi.com",
-        // Additional or modified headers if required
       },
     };
 
@@ -35,13 +34,11 @@ const fetchAllProductsFromAPI = async (totalPages = 10) => {
     }
   };
 
-  // Create an array of promises for each page fetch
   const fetchPromises = [];
   for (let i = 1; i <= totalPages; i++) {
     fetchPromises.push(fetchPage(i));
   }
 
-  // Execute all page fetches concurrently
   await Promise.all(fetchPromises);
 
   return allProducts;

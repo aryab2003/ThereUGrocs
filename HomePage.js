@@ -107,7 +107,7 @@ const LocationText = styled.p`
   color: #fff;
 `;
 
-const LoginPage = styled.div`
+/*const LoginPage = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -132,6 +132,7 @@ const LoginButton = styled.button`
     background-color: #219653;
   }
 `;
+*/
 
 const LogoutButton = styled.button`
   padding: 8px 16px;
@@ -202,8 +203,8 @@ const ContactInfo = styled.p`
   margin-top: 10px;
 `;
 
-const HomePage = () => {
-  const [loggedIn, setLoggedIn] = useState(false);
+const HomePage = ({ onLogout }) => {
+  /* const [loggedIn, setLoggedIn] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -248,10 +249,11 @@ const HomePage = () => {
       </LoginPage>
     );
   }
+  */
   return (
     <Wrapper>
       <GlobalStyle />
-      <LogoutButton onClick={handleLogout}>Logout</LogoutButton>
+      <LogoutButton onClick={onLogout}>LogOut</LogoutButton>
       <Title>There U Grocs</Title>
       <Description>Your Go-To-Grocer</Description>
       <ServicesSection>
