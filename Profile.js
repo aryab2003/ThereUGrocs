@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import styled from "styled-components";
 
 const ProfileContainer = styled.div`
@@ -208,11 +210,47 @@ const ProfileName = styled.h1`
   }
 `;
 
+const TrackOrder = styled.div`
+  margin-top: 20px;
+  text-align: center;
+
+  input {
+    padding: 8px;
+    margin-right: 10px;
+  }
+
+  button {
+    padding: 8px 16px;
+    background-color: #27ae60;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: #219653;
+    }
+  }
+`;
+
 const ProfilePage = () => {
   const [isPaneOpen, setIsPaneOpen] = useState(false);
   const [isAccountEnabled, setIsAccountEnabled] = useState(true);
   const [passwordChanged, setPasswordChanged] = useState(false);
   const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [orderId, setOrderId] = useState("");
+  const [orderStatus, setOrderStatus] = useState("");
+
+  const handleTrackOrder = () => {
+    if (orderId) {
+      setTimeout(() => {
+        const randomStatus =
+          Math.random() < 0.5 ? "Delivered" : "Not Delivered";
+        setOrderStatus(randomStatus);
+      }, 2000);
+    }
+  };
 
   const [profileData, setProfileData] = useState({
     name: "Joanna Kims",
@@ -262,6 +300,9 @@ const ProfilePage = () => {
 
   const handleAccountToggle = () => {
     setIsAccountEnabled(!isAccountEnabled);
+    if (isAccountEnabled) {
+      toast.error("You cannot use this account anymore until you login again");
+    }
   };
 
   const handleChangePassword = () => {
@@ -366,6 +407,22 @@ const ProfilePage = () => {
             the world.
           </p>
         </UserBio>
+        <ToastContainer />
+        <TrackOrder>
+          <input
+            type="text"
+            placeholder="Enter Order ID"
+            value={orderId}
+            onChange={(e) => setOrderId(e.target.value)}
+          />
+          <button onClick={handleTrackOrder}>Track Order</button>
+          {orderStatus && (
+            <p>
+              {" "}
+              Your Order with ID:{orderId} is {orderStatus}
+            </p>
+          )}
+        </TrackOrder>
         <AccountOptions>
           <AccountLabel>Account Status:</AccountLabel>
           <ToggleSwitch>

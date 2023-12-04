@@ -12,7 +12,7 @@ const GlobalStyle = createGlobalStyle`
     background-color: #45103E;
     margin: 0;
     padding: 0;
-    font-family: 'Roboto', sans-serif; /* Or any other font you prefer */
+    font-family: 'Monospace', sans-serif; /* Or any other font you prefer */
     color: #fff; /* Text color */
   }
 `;
@@ -154,22 +154,17 @@ const Divider = styled.hr`
 
 const SocialIcons = styled.div`
   display: flex;
-  justify-content: center;
-  margin-top: 10px;
-
-  img {
-    fill: #fff;
-    width: 20px;
-    height: 20px;
-    margin: 0 5px;
-    transition: fill 0.3s ease;
-
-    &:hover {
-      fill: #ff6b81;
-    }
-  }
+  justify-content: space-between;
+  width: 200px;
+  margin: 20px auto;
 `;
 
+const SocialIconLink = styled.a`
+  img {
+    width: 40px;
+    height: auto;
+  }
+`;
 const FooterContent = styled.div`
   margin-top: 10px;
 `;
@@ -303,6 +298,13 @@ const GroceryWebsite = () => {
       <Header>
         <Logo>There U Grocs</Logo>
       </Header>
+      <CartContainer>
+        <Cart cartItems={cart} />
+        <TotalPrice>Total: ${isNaN(totalPrice) ? "0" : totalPrice}</TotalPrice>
+        <Link to="/proceed-to-pay">
+          <CheckoutButton>Checkout</CheckoutButton>
+        </Link>
+      </CartContainer>
       <SearchContainer>
         <SearchInput
           type="text"
@@ -351,18 +353,24 @@ const GroceryWebsite = () => {
         </FooterContent>
         <Divider />
         <SocialIcons>
-          <img
-            src="https://workingwithdog.com/wp-content/uploads/2016/05/new_instagram_logo.jpg"
-            alt="Instagram Logo"
-          />
-          <img
-            src="https://upload.wikimedia.org/wikipedia/commons/6/6c/Facebook_Logo_2023.png"
-            alt="Instagram Logo"
-          />
-          <img
-            src="https://freelogopng.com/images/all_img/1690643591twitter-x-logo-png.png"
-            alt="Instagram Logo"
-          />
+          <SocialIconLink href="https://www.instagram.com/">
+            <img
+              src="https://workingwithdog.com/wp-content/uploads/2016/05/new_instagram_logo.jpg"
+              alt="Instagram Logo"
+            />
+          </SocialIconLink>
+          <SocialIconLink href="https://www.facebook.com/">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/6/6c/Facebook_Logo_2023.png"
+              alt="Facebook Logo"
+            />
+          </SocialIconLink>
+          <SocialIconLink href="https://twitter.com/">
+            <img
+              src="https://freelogopng.com/images/all_img/1690643591twitter-x-logo-png.png"
+              alt="Twitter Logo"
+            />
+          </SocialIconLink>
         </SocialIcons>
         <ContactInfo>All Rights Reserved</ContactInfo>
         <ContactInfo>@2023</ContactInfo>
