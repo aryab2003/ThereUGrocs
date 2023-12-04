@@ -7,6 +7,7 @@ const CartContainer = styled.div`
   border-radius: 10px;
   color: black;
   font-family: "Arial", sans-serif;
+  text-align: center;
 `;
 
 const CartItem = styled.div`
@@ -14,6 +15,17 @@ const CartItem = styled.div`
   padding: 10px 0;
   display: flex;
   justify-content: space-between;
+  align-items: flex-start; /* Center vertically */
+  text-align: flex-start; /* Center horizontally */
+`;
+
+const Price = styled.p`
+  flex: 1; /* Take up available space */
+  text-align: right; /* Align price text to the right */
+`;
+
+const Quantity = styled.p`
+  margin-left: 150px; /* Add left margin for spacing */
 `;
 
 const Cart = ({ cartItems }) => {
@@ -54,12 +66,14 @@ const Cart = ({ cartItems }) => {
         cart.map((item, index) => (
           <CartItem key={index}>
             <p>{item.name}</p>
-            <p>${item.price}</p>
-            <p>
-              <button onClick={() => decreaseQuantity(index)}>-</button>
-              {item.quantity}
-              <button onClick={() => increaseQuantity(index)}>+</button>
-            </p>
+            <Price>${item.price}</Price>
+            <Quantity>
+              <p>
+                <button onClick={() => decreaseQuantity(index)}>-</button>
+                {item.quantity}
+                <button onClick={() => increaseQuantity(index)}>+</button>
+              </p>
+            </Quantity>
           </CartItem>
         ))
       ) : (

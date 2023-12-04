@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const fetchAllProductsFromAPI = async (startPage = 1) => {
+const fetchAllProductsFromAPI = async (totalPages = 10) => {
   const allProducts = [];
 
   const fetchPage = async (pageNumber) => {
@@ -30,16 +30,19 @@ const fetchAllProductsFromAPI = async (startPage = 1) => {
       }));
 
       allProducts.push(...products);
-
-      if (response.data.more) {
-        await fetchPage(pageNumber + 1);
-      }
     } catch (error) {
       console.error("Error fetching products:", error);
     }
   };
 
-  await fetchPage(startPage + 1);
+  // Create an array of promises for each page fetch
+  const fetchPromises = [];
+  for (let i = 1; i <= totalPages; i++) {
+    fetchPromises.push(fetchPage(i));
+  }
+
+  // Execute all page fetches concurrently
+  await Promise.all(fetchPromises);
 
   return allProducts;
 };
