@@ -43,7 +43,7 @@ const Logo = styled.h1`
 `;
 
 const ProductCard = styled.div`
-  background-color: #fff;
+  background-color: grey;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   padding: 20px;
