@@ -125,6 +125,7 @@ const ToggleButton = styled.button`
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  margin-top: 20px;
 
   &:hover {
     background-color: #555;
@@ -293,10 +294,31 @@ const ContactInfo = styled.p`
 const ProfilePage = () => {
   const [isPaneOpen, setIsPaneOpen] = useState(false);
   const [isAccountEnabled, setIsAccountEnabled] = useState(true);
-  const [passwordChanged, setPasswordChanged] = useState(false);
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [orderId, setOrderId] = useState("");
   const [orderStatus, setOrderStatus] = useState("");
+  const [password, setPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [changedPassword, setChangedPassword] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
+
+  const handleChangePassword = () => {
+    // Ensure new and confirm passwords match
+    if (newPassword !== confirmPassword) {
+      toast.error("Passwords do not match. Please re-enter.");
+      return;
+    }
+
+    // Simulated password change logic for demonstration
+    if (isLoggedIn) {
+      setChangedPassword(true); // Indicate password changed
+      setPassword(newPassword); // Set the new password
+      toast.success("Password changed successfully!");
+    } else {
+      toast.error("You need to log in first.");
+    }
+  };
 
   const handleTrackOrder = () => {
     if (orderId) {
@@ -361,10 +383,6 @@ const ProfilePage = () => {
     }
   };
 
-  const handleChangePassword = () => {
-    setPasswordChanged(true);
-  };
-
   const togglePane = () => {
     setIsPaneOpen(!isPaneOpen);
   };
@@ -373,9 +391,27 @@ const ProfilePage = () => {
     <ProfileContainer>
       <LeftPane isOpen={isPaneOpen}>
         <ul>
-          <li>
+          <div>
+            <input
+              type="password"
+              placeholder="Current Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <input
+              type="password"
+              placeholder="New Password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+            />
+            <input
+              type="password"
+              placeholder="Confirm New Password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
             <button onClick={handleChangePassword}>Change Password</button>
-          </li>
+          </div>
           <li>
             <ToggleButton onClick={handleEditProfile}>
               Edit Profile
