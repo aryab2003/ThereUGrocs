@@ -147,6 +147,61 @@ const LogoutButton = styled.button`
   }
 `;
 
+const Footer = styled.footer`
+  background-color: #333;
+  color: #fff;
+  padding: 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 100%;
+  height: 50%;
+
+  @media (max-width: 768px) {
+    height:100%;
+    max-width:100vw;
+`;
+
+const FooterLink = styled.a`
+  color: #fff;
+  text-decoration: none;
+  margin: 5px;
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: #ff6b81;
+  }
+`;
+
+const Divider = styled.hr`
+  width: 80%;
+  margin: 10px 0;
+  border: none;
+  border-top: 1px solid #fff;
+`;
+
+const SocialIcons = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 200px;
+  margin: 20px auto;
+`;
+
+const SocialIconLink = styled.a`
+  img {
+    width: 40px;
+    height: auto;
+  }
+`;
+const FooterContent = styled.div`
+  margin-top: 10px;
+`;
+
+const ContactInfo = styled.p`
+  margin-top: 10px;
+`;
+
 const HomePage = () => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [username, setUsername] = useState("");
@@ -258,6 +313,37 @@ const HomePage = () => {
         <ExploreText>Explore More</ExploreText>
         <Arrow>&#8595;</Arrow>
       </ExploreSection>
+      <Footer>
+        <FooterContent>
+          <FooterLink href="#">About Us</FooterLink>
+          <FooterLink href="#">Contact</FooterLink>
+          <FooterLink href="#">Privacy Policy</FooterLink>
+          <FooterLink href="#">Terms of Service</FooterLink>
+        </FooterContent>
+        <Divider />
+        <SocialIcons>
+          <SocialIconLink href="https://www.instagram.com/">
+            <img
+              src="https://workingwithdog.com/wp-content/uploads/2016/05/new_instagram_logo.jpg"
+              alt="Instagram Logo"
+            />
+          </SocialIconLink>
+          <SocialIconLink href="https://www.facebook.com/">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/6/6c/Facebook_Logo_2023.png"
+              alt="Facebook Logo"
+            />
+          </SocialIconLink>
+          <SocialIconLink href="https://twitter.com/">
+            <img
+              src="https://freelogopng.com/images/all_img/1690643591twitter-x-logo-png.png"
+              alt="Twitter Logo"
+            />
+          </SocialIconLink>
+        </SocialIcons>
+        <ContactInfo>All Rights Reserved</ContactInfo>
+        <ContactInfo>@2023</ContactInfo>
+      </Footer>
     </Wrapper>
   );
 };
