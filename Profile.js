@@ -9,6 +9,11 @@ const ProfileContainer = styled.div`
   min-height: 100vh;
   min-width: 100vw;
   display: flex;
+  align-items: stretch;
+
+  @media (max-width: 767px) {
+    flex-direction: column;
+  }
 `;
 
 const Header = styled.header`
@@ -213,7 +218,21 @@ const ProfilePage = () => {
     name: "Joanna Kims",
     email: "jkims@gmail.com",
     location: "Indiana, USA",
+    profilePhoto: "",
   });
+
+  const handleProfilePhotoChange = (e) => {
+    const file = e.target.files[0]; // Get the selected file
+    if (file) {
+      const reader = new FileReader();
+      reader.readAsDataURL(file); // Read the file as a data URL
+
+      reader.onload = () => {
+        setProfileData({ ...profileData, profilePhoto: reader.result });
+      };
+    }
+  };
+
   const [editedProfileData, setEditedProfileData] = useState({});
   const handleEditProfile = () => {
     setIsEditingProfile(true);
@@ -276,8 +295,16 @@ const ProfilePage = () => {
       <Main>
         <ProfileDetails>
           <ProfilePicture
-            src="https://in.bmscdn.com/iedb/artist/images/website/poster/large/kiara-advani-1043272-1655467015.jpg"
+            src={
+              profileData.profilePhoto ||
+              "https://in.bmscdn.com/iedb/artist/images/website/poster/large/kiara-advani-1043272-1655467015.jpg"
+            }
             alt="Profile"
+          />
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleProfilePhotoChange}
           />
           <ProfileInfo>
             {isEditingProfile ? (

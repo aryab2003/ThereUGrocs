@@ -1,14 +1,24 @@
+import axios from "axios";
+
 const fetchFoodImages = async () => {
-  const API_KEY = "b0c2e993fbmsh15f6c675a933a3dp105740jsn29b53efc4405";
+  const options = {
+    method: "GET",
+    url: "https://edamam-food-and-grocery-database.p.rapidapi.com/api/food-database/v2/parser",
+    params: {
+      "nutrition-type": "cooking",
+      "category[0]": "generic-foods",
+      "health[0]": "alcohol-free",
+    },
+    headers: {
+      "X-RapidAPI-Key": "2c196108a0msha295f3b1da648b7p1839d2jsnafec703275ae",
+      "X-RapidAPI-Host": "edamam-food-and-grocery-database.p.rapidapi.com",
+    },
+  };
+
   try {
-    const response = await fetch(
-      "https://restaurants222.p.rapidapi.com/currencies"
-    );
-    if (!response.ok) {
-      throw new Error("Failed to fetch");
-    }
-    const data = await response.json();
-    return data; // Assuming the API returns an array of image URLs
+    const response = await axios.request(options);
+    console.log(response.data); 
+    return response.data;
   } catch (error) {
     console.error("Error fetching food images:", error);
     return [];
@@ -17,7 +27,7 @@ const fetchFoodImages = async () => {
 
 const generateMockProducts = async () => {
   const mockProducts = [];
-  const foodImages = await fetchFoodImages(); // Fetch food images from your API
+  const foodImages = await fetchFoodImages(); 
 
   for (let i = 1; i <= 100; i++) {
     const randomIndex = Math.floor(Math.random() * foodImages.length);
@@ -33,9 +43,8 @@ const generateMockProducts = async () => {
   return mockProducts;
 };
 
-const mockProducts = await generateMockProducts(); // Call the function to get mock products
-
-const fetchProductsFromAPI = () => {
+const fetchProductsFromAPI = async () => {
+  const mockProducts = await generateMockProducts();
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve(mockProducts);

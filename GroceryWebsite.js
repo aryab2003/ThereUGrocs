@@ -263,7 +263,9 @@ const GroceryWebsite = () => {
         newDisabledButtons[index] = true;
         return newDisabledButtons;
       });
+
       // addProductToFirestore(product);
+
       toast.success(`${product.name} added to cart!`, {
         position: toast.POSITION.BOTTOM_RIGHT,
         autoClose: 3000,

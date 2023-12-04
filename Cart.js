@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
 const CartContainer = styled.div`
@@ -17,18 +17,49 @@ const CartItem = styled.div`
 `;
 
 const Cart = ({ cartItems }) => {
+  const [cart, setCart] = useState(
+    cartItems.map((item) => ({ ...item, quantity: 1 }))
+  );
+
+  const increaseQuantity = (index) => {
+    const updatedCart = cart.map((item, i) =>
+      i === index ? { ...item, quantity: item.quantity + 1 } : item
+    );
+    setCart(updatedCart);
+  };
+
+  const decreaseQuantity = (index) => {
+    if (cart[index].quantity > 1) {
+      const updatedCart = cart.map((item, i) =>
+        i === index ? { ...item, quantity: item.quantity - 1 } : item
+      );
+      setCart(updatedCart);
+    }
+  };
+
+  useEffect(() => {
+    if (cartItems && cartItems.length > 0) {
+      setCart(cartItems.map((item) => ({ ...item, quantity: 1 })));
+    }
+  }, [cartItems]);
+
   return (
     <CartContainer>
-      {cartItems && cartItems.length > 0 ? (
+      {cart && cart.length > 0 ? (
         <h2>Your Cart</h2>
       ) : (
         <h2>Loading Wonders For You</h2>
       )}
-      {cartItems && cartItems.length > 0 ? (
-        cartItems.map((item, index) => (
+      {cart && cart.length > 0 ? (
+        cart.map((item, index) => (
           <CartItem key={index}>
             <p>{item.name}</p>
             <p>${item.price}</p>
+            <p>
+              <button onClick={() => decreaseQuantity(index)}>-</button>
+              {item.quantity}
+              <button onClick={() => increaseQuantity(index)}>+</button>
+            </p>
           </CartItem>
         ))
       ) : (
