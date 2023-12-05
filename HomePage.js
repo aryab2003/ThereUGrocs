@@ -92,6 +92,7 @@ const LocationItem = styled.li`
   background-color: black;
   border-radius: 10px;
   overflow: hidden;
+  margin: 30px;
 
   img {
     width: 100%;
@@ -167,7 +168,7 @@ const Footer = styled.footer`
 const FooterLink = styled.a`
   color: #fff;
   text-decoration: none;
-  margin: 5px;
+  margin: 35px;
   transition: color 0.3s ease;
 
   &:hover {
@@ -201,6 +202,16 @@ const FooterContent = styled.div`
 
 const ContactInfo = styled.p`
   margin-top: 10px;
+`;
+
+const CursorTrail = styled.div`
+  position: fixed;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 30%;
 `;
 
 const HomePage = ({ onLogout }) => {
@@ -250,103 +261,145 @@ const HomePage = ({ onLogout }) => {
     );
   }
   */
-  return (
-    <Wrapper>
-      <GlobalStyle />
-      <LogoutButton onClick={onLogout}>LogOut</LogoutButton>
-      <Title>There U Grocs</Title>
-      <Description>Your Go-To-Grocer</Description>
-      <ServicesSection>
-        {" "}
-        <ServiceBox>
-          <img
-            src="https://www.healthyeating.org/images/default-source/home-0.0/nutrition-topics-2.0/general-nutrition-wellness/2-2-2-3foodgroups_fruits_detailfeature.jpg?sfvrsn=64942d53_4"
-            alt="Service 1"
-          />
-        </ServiceBox>
-        <ServiceBox>
-          <img
-            src="https://media.istockphoto.com/id/589415708/photo/fresh-fruits-and-vegetables.jpg?s=612x612&w=0&k=20&c=aBFGUU-98pnoht73co8r2TZIKF3MDtBBu9KSxtxK_C0="
-            alt="Service 2"
-          />
-        </ServiceBox>
-        <ServiceBox>
-          <img
-            src="https://t3.ftcdn.net/jpg/02/26/53/80/360_F_226538033_C42p96JDNwkSdQs86Agxd1TtaVJsyJ71.jpg"
-            alt="Service 3"
-          />
-        </ServiceBox>
-        <ServiceBox>
-          <img
-            src="https://domf5oio6qrcr.cloudfront.net/medialibrary/9685/iStock-544807136.jpg"
-            alt="Service 4"
-          />
-        </ServiceBox>
-      </ServicesSection>
-      <Locations>
-        <LocationTitle>Available Locations</LocationTitle>
-        <LocationList>
-          <LocationItem>
-            <img
-              src="https://cdn.britannica.com/91/110191-050-7BCFD56B/Victoria-Memorial-Hall-Kolkata-India.jpg"
-              alt="Kolkata"
-            />
-            <LocationText>Kolkata</LocationText>
-          </LocationItem>
-          <LocationItem>
-            <img
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdwj-qOGDvdw47TwUxx_QnTjMmBA0To6yThw&usqp=CAU"
-              alt="Mumbai"
-            />
-            <LocationText>Mumbai</LocationText>
-          </LocationItem>
-          <LocationItem>
-            <img
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Delhi%2C_India%2C_India_Gate.jpg/1200px-Delhi%2C_India%2C_India_Gate.jpg"
-              alt="Delhi"
-            />
-            <LocationText>Delhi</LocationText>
-          </LocationItem>
-          {/* Add more locations as needed */}
-        </LocationList>
-      </Locations>
 
-      <ExploreSection>
-        <ExploreText>Explore More</ExploreText>
-        <Arrow>&#8595;</Arrow>
-      </ExploreSection>
-      <Footer>
-        <FooterContent>
-          <FooterLink href="#">About Us</FooterLink>
-          <FooterLink href="#">Contact</FooterLink>
-          <FooterLink href="#">Privacy Policy</FooterLink>
-          <FooterLink href="#">Terms of Service</FooterLink>
-        </FooterContent>
-        <Divider />
-        <SocialIcons>
-          <SocialIconLink href="https://www.instagram.com/">
+  const [trail, setTrail] = useState([]);
+
+  const handleMouseMove = (e) => {
+    const { clientX, clientY } = e;
+    setTrail((prevTrail) => [
+      ...prevTrail,
+      {
+        x: clientX - 5,
+        y: clientY - 5,
+        color: getRandomColor(),
+      },
+    ]);
+  };
+
+  const getRandomColor = () => {
+    const randomColor = Math.floor(Math.random() * 16777215).toString(16);
+    return `#${randomColor}`;
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setTrail([]);
+    }, 1000);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [trail]);
+
+  return (
+    <div onMouseMove={handleMouseMove}>
+      {trail.map((point, index) => (
+        <CursorTrail
+          key={index}
+          style={{
+            left: `${point.x}px`,
+            top: `${point.y}px`,
+            backgroundColor: point.color,
+          }}
+        />
+      ))}
+      <Wrapper>
+        <GlobalStyle />
+        <LogoutButton onClick={onLogout}>LogOut</LogoutButton>
+        <Title>There U Grocs</Title>
+        <Description>Your Go-To-Grocer</Description>
+        <ServicesSection>
+          {" "}
+          <ServiceBox>
             <img
-              src="https://workingwithdog.com/wp-content/uploads/2016/05/new_instagram_logo.jpg"
-              alt="Instagram Logo"
+              src="https://www.healthyeating.org/images/default-source/home-0.0/nutrition-topics-2.0/general-nutrition-wellness/2-2-2-3foodgroups_fruits_detailfeature.jpg?sfvrsn=64942d53_4"
+              alt="Service 1"
             />
-          </SocialIconLink>
-          <SocialIconLink href="https://www.facebook.com/">
+          </ServiceBox>
+          <ServiceBox>
             <img
-              src="https://upload.wikimedia.org/wikipedia/commons/6/6c/Facebook_Logo_2023.png"
-              alt="Facebook Logo"
+              src="https://media.istockphoto.com/id/589415708/photo/fresh-fruits-and-vegetables.jpg?s=612x612&w=0&k=20&c=aBFGUU-98pnoht73co8r2TZIKF3MDtBBu9KSxtxK_C0="
+              alt="Service 2"
             />
-          </SocialIconLink>
-          <SocialIconLink href="https://twitter.com/">
+          </ServiceBox>
+          <ServiceBox>
             <img
-              src="https://freelogopng.com/images/all_img/1690643591twitter-x-logo-png.png"
-              alt="Twitter Logo"
+              src="https://t3.ftcdn.net/jpg/02/26/53/80/360_F_226538033_C42p96JDNwkSdQs86Agxd1TtaVJsyJ71.jpg"
+              alt="Service 3"
             />
-          </SocialIconLink>
-        </SocialIcons>
-        <ContactInfo>All Rights Reserved</ContactInfo>
-        <ContactInfo>@2023</ContactInfo>
-      </Footer>
-    </Wrapper>
+          </ServiceBox>
+          <ServiceBox>
+            <img
+              src="https://domf5oio6qrcr.cloudfront.net/medialibrary/9685/iStock-544807136.jpg"
+              alt="Service 4"
+            />
+          </ServiceBox>
+        </ServicesSection>
+        <Locations>
+          <LocationTitle>Available Locations</LocationTitle>
+          <LocationList>
+            <LocationItem>
+              <img
+                src="https://cdn.britannica.com/91/110191-050-7BCFD56B/Victoria-Memorial-Hall-Kolkata-India.jpg"
+                alt="Kolkata"
+              />
+              <LocationText>Kolkata</LocationText>
+            </LocationItem>
+            <LocationItem>
+              <img
+                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdwj-qOGDvdw47TwUxx_QnTjMmBA0To6yThw&usqp=CAU"
+                alt="Mumbai"
+              />
+              <LocationText>Mumbai</LocationText>
+            </LocationItem>
+            <LocationItem>
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Delhi%2C_India%2C_India_Gate.jpg/1200px-Delhi%2C_India%2C_India_Gate.jpg"
+                alt="Delhi"
+              />
+              <LocationText>Delhi</LocationText>
+            </LocationItem>
+            {/* Add more locations as needed */}
+          </LocationList>
+        </Locations>
+
+        <ExploreSection>
+          <ExploreText>Explore More</ExploreText>
+          <Arrow>&#8595;</Arrow>
+        </ExploreSection>
+        <Footer>
+          <FooterContent>
+            <FooterLink href="#">About Us</FooterLink>
+            <FooterLink href="#">Contact</FooterLink>
+            <FooterLink href="#">Privacy Policy</FooterLink>
+            <FooterLink href="#">Terms of Service</FooterLink>
+          </FooterContent>
+          <Divider />
+          <SocialIcons>
+            <SocialIconLink href="https://www.instagram.com/">
+              <img
+                src="https://workingwithdog.com/wp-content/uploads/2016/05/new_instagram_logo.jpg"
+                alt="Instagram Logo"
+              />
+            </SocialIconLink>
+            <SocialIconLink href="https://www.facebook.com/">
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/6/6c/Facebook_Logo_2023.png"
+                alt="Facebook Logo"
+              />
+            </SocialIconLink>
+            <SocialIconLink href="https://twitter.com/">
+              <img
+                src="https://freelogopng.com/images/all_img/1690643591twitter-x-logo-png.png"
+                alt="Twitter Logo"
+              />
+            </SocialIconLink>
+          </SocialIcons>
+          <ContactInfo>All Rights Reserved</ContactInfo>
+          <ContactInfo>© 2023</ContactInfo>
+        </Footer>
+      </Wrapper>
+    </div>
   );
 };
 

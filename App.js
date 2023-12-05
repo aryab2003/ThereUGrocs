@@ -22,6 +22,7 @@ const Navigation = styled.nav`
   justify-content: center;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
   transition: all 0.7s ease;
+  width: 100%;
 
   &:hover {
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);

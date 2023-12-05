@@ -33,9 +33,14 @@ const Header = styled.header`
 const Logo = styled.h1`
   font-size: 24px;
   color: #333;
-  margin-left: 0;
-  margin-right: auto;
   font-family: "Pacifico", sans-serif;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+
+  justify-content: center;
 
   @media screen and (min-width: 768px) {
     wrap-direction: row;
@@ -137,7 +142,7 @@ const Footer = styled.footer`
 const FooterLink = styled.a`
   color: #fff;
   text-decoration: none;
-  margin: 5px;
+  margin: 35px;
   transition: color 0.3s ease;
 
   &:hover {
@@ -222,10 +227,22 @@ const Spinner = styled.div`
     }
   }
 `;
+
 const Message = styled.p`
   text-align: center;
   color: green;
 `;
+
+const CursorTrail = styled.div`
+  position: fixed;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 30%;
+`;
+
 const GroceryWebsite = () => {
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
@@ -292,8 +309,47 @@ const GroceryWebsite = () => {
     }
   }, [filteredProducts]);
 
+  const [trail, setTrail] = useState([]);
+
+  const handleMouseMove = (e) => {
+    const { clientX, clientY } = e;
+    setTrail((prevTrail) => [
+      ...prevTrail,
+      {
+        x: clientX - 5,
+        y: clientY - 5,
+        color: getRandomColor(),
+      },
+    ]);
+  };
+
+  const getRandomColor = () => {
+    const randomColor = Math.floor(Math.random() * 16777215).toString(16);
+    return `#${randomColor}`;
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setTrail([]);
+    }, 1000);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [trail]);
+
   return (
-    <div>
+    <div onMouseMove={handleMouseMove}>
+      {trail.map((point, index) => (
+        <CursorTrail
+          key={index}
+          style={{
+            left: `${point.x}px`,
+            top: `${point.y}px`,
+            backgroundColor: point.color,
+          }}
+        />
+      ))}
       <GlobalStyle />
       <Header>
         <Logo>There U Grocs</Logo>
@@ -373,7 +429,7 @@ const GroceryWebsite = () => {
           </SocialIconLink>
         </SocialIcons>
         <ContactInfo>All Rights Reserved</ContactInfo>
-        <ContactInfo>@2023</ContactInfo>
+        <ContactInfo>© 2023</ContactInfo>
       </Footer>
       <ToastContainer />
     </div>

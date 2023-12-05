@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import styled from "styled-components";
@@ -39,7 +39,6 @@ const Header = styled.header`
     min-width: 100vh;
   }
 `;
-
 const LeftPane = styled.div`
   background-color: #333;
   color: white;
@@ -115,8 +114,19 @@ const UserInfo = styled.div`
 
 const UserBio = styled.div`
   margin-top: 20px;
-`;
 
+  @media (max-width: 768px) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-width: 90%;
+    overflow-x: auto;
+    max-height: 200px; /* Set a specific height for triggering the scroll */
+    margin: 20px auto;
+    padding: 0 10px;
+  }
+`;
 const ToggleButton = styled.button`
   background-color: #333;
   color: white;
@@ -243,20 +253,26 @@ const Footer = styled.footer`
   text-align: center;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  max-width: 50%;
+  align-items: flex-start; /* Adjusted alignment to move the footer content to the left */
+  max-width: 40%;
   height: 50%;
+  margin-left: 5%; /* Added margin to further move the footer to the left */
 
   @media (max-width: 768px) {
-    height:100%;
-    max-width:100vw;
+    height: 100%;
+    max-width: 100vw;
+    margin-left: 0; /* Reset margin for smaller screens */
+    align-items: center; /* Center alignment for smaller screens */
+  }
 `;
 
 const FooterLink = styled.a`
   color: #fff;
   text-decoration: none;
-  margin: 5px;
+  margin: 25px;
   transition: color 0.3s ease;
+  display: flex;
+  flex-direction: column;
 
   &:hover {
     color: #ff6b81;
@@ -264,7 +280,7 @@ const FooterLink = styled.a`
 `;
 
 const Divider = styled.hr`
-  width: 80%;
+  width: 100%;
   margin: 10px 0;
   border: none;
   border-top: 1px solid #fff;
@@ -291,6 +307,16 @@ const ContactInfo = styled.p`
   margin-top: 10px;
 `;
 
+const CursorTrail = styled.div`
+  position: fixed;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 10%;
+`;
+
 const ProfilePage = () => {
   const [isPaneOpen, setIsPaneOpen] = useState(false);
   const [isAccountEnabled, setIsAccountEnabled] = useState(true);
@@ -304,16 +330,14 @@ const ProfilePage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(true);
 
   const handleChangePassword = () => {
-    // Ensure new and confirm passwords match
     if (newPassword !== confirmPassword) {
       toast.error("Passwords do not match. Please re-enter.");
       return;
     }
 
-    // Simulated password change logic for demonstration
     if (isLoggedIn) {
-      setChangedPassword(true); // Indicate password changed
-      setPassword(newPassword); // Set the new password
+      setChangedPassword(true);
+      setPassword(newPassword);
       toast.success("Password changed successfully!");
     } else {
       toast.error("You need to log in first.");
@@ -338,10 +362,10 @@ const ProfilePage = () => {
   });
 
   const handleProfilePhotoChange = (e) => {
-    const file = e.target.files[0]; // Get the selected file
+    const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
-      reader.readAsDataURL(file); // Read the file as a data URL
+      reader.readAsDataURL(file);
 
       reader.onload = () => {
         setProfileData({ ...profileData, profilePhoto: reader.result });
@@ -361,10 +385,8 @@ const ProfilePage = () => {
   };
 
   const handleSaveProfile = () => {
-    // Here you would typically perform an API call to update the profile
-    // For demonstration, we'll just update the state
     setIsEditingProfile(false);
-    setProfileData({ ...editedProfileData }); // Update profile data with edited data
+    setProfileData({ ...editedProfileData });
     setEditedProfileData({});
   };
 
@@ -372,7 +394,7 @@ const ProfilePage = () => {
     const { name, value } = e.target;
     setEditedProfileData({
       ...editedProfileData,
-      [name]: value !== "" ? value : profileData[name], // Use profileData if value is empty
+      [name]: value !== "" ? value : profileData[name],
     });
   };
 
@@ -387,182 +409,275 @@ const ProfilePage = () => {
     setIsPaneOpen(!isPaneOpen);
   };
 
+  const [trail, setTrail] = useState([]);
+
+  const handleMouseMove = (e) => {
+    const { clientX, clientY } = e;
+    setTrail((prevTrail) => [
+      ...prevTrail,
+      {
+        x: clientX - 5,
+        y: clientY - 5,
+        color: getRandomColor(),
+      },
+    ]);
+  };
+
+  const getRandomColor = () => {
+    const randomShade = Math.floor(Math.random() * 51);
+    const randomColor = 255 - randomShade;
+    const colorHex = randomColor.toString(16);
+
+    const hexValue = `#${colorHex}${colorHex}${colorHex}`;
+
+    return hexValue;
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setTrail([]);
+    }, 1000);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [trail]);
+
+  const [bio, setBio] = useState(
+    "Jane is an avid traveler and passionate photographer. Her adventures have taken her across continents."
+  );
+
+  const [editedBio, setEditedBio] = useState("");
+  const [isEditingBio, setIsEditingBio] = useState(false);
+
+  const handleEditBio = () => {
+    setIsEditingBio(true);
+    setEditedBio(bio);
+  };
+
+  const handleCancelEditBio = () => {
+    setIsEditingBio(false);
+    setEditedBio("");
+  };
+
+  const handleSaveBio = () => {
+    setIsEditingBio(false);
+    setBio(editedBio);
+    setEditedBio("");
+  };
+
+  const handleBioInputChange = (e) => {
+    const inputBio = e.target.value;
+    if (inputBio.length <= 50) {
+      setEditedBio(inputBio);
+    }
+  };
+
   return (
-    <ProfileContainer>
-      <LeftPane isOpen={isPaneOpen}>
-        <ul>
-          <div>
-            <input
-              type="password"
-              placeholder="Current Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <input
-              type="password"
-              placeholder="New Password"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-            />
-            <input
-              type="password"
-              placeholder="Confirm New Password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-            />
-            <button onClick={handleChangePassword}>Change Password</button>
-          </div>
-          <li>
-            <ToggleButton onClick={handleEditProfile}>
-              Edit Profile
-            </ToggleButton>
-          </li>
-        </ul>
-      </LeftPane>
-
-      <Header>
-        <h1>Your Profile</h1>
-        <ToggleButton onClick={togglePane}>Toggle Pane</ToggleButton>
-      </Header>
-
-      <Main>
-        <ProfileDetails>
-          <ProfilePicture
-            src={
-              profileData.profilePhoto ||
-              "https://in.bmscdn.com/iedb/artist/images/website/poster/large/kiara-advani-1043272-1655467015.jpg"
-            }
-            alt="Profile"
+    <>
+      <div onMouseMove={handleMouseMove}>
+        {trail.map((point, index) => (
+          <CursorTrail
+            key={index}
+            style={{
+              left: `${point.x}px`,
+              top: `${point.y}px`,
+              backgroundColor: point.color,
+            }}
           />
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleProfilePhotoChange}
-          />
-          <ProfileInfo>
-            {isEditingProfile ? (
+        ))}
+        <ProfileContainer>
+          <LeftPane isOpen={isPaneOpen}>
+            <ul>
               <div>
                 <input
-                  type="text"
-                  name="name"
-                  value={
-                    editedProfileData.name !== undefined
-                      ? editedProfileData.name
-                      : profileData.name
-                  }
-                  onChange={handleInputChange}
+                  type="password"
+                  placeholder="Current Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
                 <input
-                  type="email"
-                  name="email"
-                  value={
-                    editedProfileData.email !== undefined
-                      ? editedProfileData.email
-                      : profileData.email
-                  }
-                  onChange={handleInputChange}
+                  type="password"
+                  placeholder="New Password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
                 />
                 <input
-                  type="text"
-                  name="location"
-                  value={
-                    editedProfileData.location !== undefined
-                      ? editedProfileData.location
-                      : profileData.location
-                  }
-                  onChange={handleInputChange}
+                  type="password"
+                  placeholder="Confirm New Password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
                 />
-                <ToggleButton onClick={handleCancelEdit}>Cancel</ToggleButton>
-                <ToggleButton onClick={handleSaveProfile}>Save</ToggleButton>
+                <button onClick={handleChangePassword}>Change Password</button>
               </div>
-            ) : (
-              <div>
-                <ProfileName>{profileData.name}</ProfileName>
-                <ProfileDetails>Email: {profileData.email}</ProfileDetails>
-                <ProfileDetails>
-                  Location: {profileData.location}
-                </ProfileDetails>
+              <li>
                 <ToggleButton onClick={handleEditProfile}>
                   Edit Profile
                 </ToggleButton>
-              </div>
-            )}
-          </ProfileInfo>
-        </ProfileDetails>
-        <UserBio>
-          <h2>Bio</h2>
-          <p>
-            Jane is an avid traveler and passionate photographer. Her adventures
-            have taken her across continents, capturing breathtaking landscapes
-            and diverse cultures. She believes in the power of storytelling
-            through images and uses her photography to inspire others to explore
-            the world.
-          </p>
-        </UserBio>
-        <ToastContainer />
-        <TrackOrder>
-          <input
-            type="text"
-            placeholder="Enter Order ID"
-            value={orderId}
-            onChange={(e) => setOrderId(e.target.value)}
-          />
-          <button onClick={handleTrackOrder}>Track Order</button>
-          {orderStatus && (
-            <p>
-              {" "}
-              Your Order with ID:{orderId} is {orderStatus}
-            </p>
-          )}
-        </TrackOrder>
-        <AccountOptions>
-          <AccountLabel>Account Status:</AccountLabel>
-          <ToggleSwitch>
-            <input
-              type="checkbox"
-              id="accountToggle"
-              checked={isAccountEnabled}
-              onChange={handleAccountToggle}
-            />
-            <ToggleSlider htmlFor="accountToggle" />
-          </ToggleSwitch>
-          <AccountStatus>
-            {isAccountEnabled ? "Active" : "Disabled"}
-          </AccountStatus>
-        </AccountOptions>
-      </Main>
-      <Footer>
-        <FooterContent>
-          <FooterLink href="#">About Us</FooterLink>
-          <FooterLink href="#">Contact</FooterLink>
-          <FooterLink href="#">Privacy Policy</FooterLink>
-          <FooterLink href="#">Terms of Service</FooterLink>
-        </FooterContent>
-        <Divider />
-        <SocialIcons>
-          <SocialIconLink href="https://www.instagram.com/">
-            <img
-              src="https://workingwithdog.com/wp-content/uploads/2016/05/new_instagram_logo.jpg"
-              alt="Instagram Logo"
-            />
-          </SocialIconLink>
-          <SocialIconLink href="https://www.facebook.com/">
-            <img
-              src="https://upload.wikimedia.org/wikipedia/commons/6/6c/Facebook_Logo_2023.png"
-              alt="Facebook Logo"
-            />
-          </SocialIconLink>
-          <SocialIconLink href="https://twitter.com/">
-            <img
-              src="https://freelogopng.com/images/all_img/1690643591twitter-x-logo-png.png"
-              alt="Twitter Logo"
-            />
-          </SocialIconLink>
-        </SocialIcons>
-        <ContactInfo>All Rights Reserved</ContactInfo>
-        <ContactInfo>@2023</ContactInfo>
-      </Footer>
-    </ProfileContainer>
+              </li>
+            </ul>
+          </LeftPane>
+
+          <Header>
+            <h1>Your Profile</h1>
+            <ToggleButton onClick={togglePane}>Toggle Pane</ToggleButton>
+          </Header>
+
+          <Main>
+            <ProfileDetails>
+              <ProfilePicture
+                src={
+                  profileData.profilePhoto ||
+                  "https://in.bmscdn.com/iedb/artist/images/website/poster/large/kiara-advani-1043272-1655467015.jpg"
+                }
+                alt="Profile"
+              />
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleProfilePhotoChange}
+              />
+              <ProfileInfo>
+                {isEditingProfile ? (
+                  <div>
+                    <input
+                      type="text"
+                      name="name"
+                      value={
+                        editedProfileData.name !== undefined
+                          ? editedProfileData.name
+                          : profileData.name
+                      }
+                      onChange={handleInputChange}
+                    />
+                    <input
+                      type="email"
+                      name="email"
+                      value={
+                        editedProfileData.email !== undefined
+                          ? editedProfileData.email
+                          : profileData.email
+                      }
+                      onChange={handleInputChange}
+                    />
+                    <input
+                      type="text"
+                      name="location"
+                      value={
+                        editedProfileData.location !== undefined
+                          ? editedProfileData.location
+                          : profileData.location
+                      }
+                      onChange={handleInputChange}
+                    />
+                    <ToggleButton onClick={handleCancelEdit}>
+                      Cancel
+                    </ToggleButton>
+                    <ToggleButton onClick={handleSaveProfile}>
+                      Save
+                    </ToggleButton>
+                  </div>
+                ) : (
+                  <div>
+                    <ProfileName>{profileData.name}</ProfileName>
+                    <ProfileDetails>Email: {profileData.email}</ProfileDetails>
+                    <ProfileDetails>
+                      Location: {profileData.location}
+                    </ProfileDetails>
+                    <ToggleButton onClick={handleEditProfile}>
+                      Edit Profile
+                    </ToggleButton>
+                  </div>
+                )}
+              </ProfileInfo>
+            </ProfileDetails>
+            <UserBio>
+              <h2>Bio</h2>
+              {isEditingBio ? (
+                <div>
+                  <textarea
+                    value={editedBio}
+                    onChange={handleBioInputChange}
+                    rows="5"
+                    cols="50"
+                  />
+                  <ToggleButton onClick={handleCancelEditBio}>
+                    Cancel
+                  </ToggleButton>
+                  <ToggleButton onClick={handleSaveBio}>Save</ToggleButton>
+                </div>
+              ) : (
+                <div>
+                  <p>{bio}</p>
+                  <ToggleButton onClick={handleEditBio}>Edit Bio</ToggleButton>
+                </div>
+              )}
+            </UserBio>
+            <ToastContainer />
+            <TrackOrder>
+              <input
+                type="text"
+                placeholder="Enter Order ID"
+                value={orderId}
+                onChange={(e) => setOrderId(e.target.value)}
+              />
+              <button onClick={handleTrackOrder}>Track Order</button>
+              {orderStatus && (
+                <p>
+                  {" "}
+                  Your Order with ID:{orderId} is {orderStatus}
+                </p>
+              )}
+            </TrackOrder>
+            <AccountOptions>
+              <AccountLabel>Account Status:</AccountLabel>
+              <ToggleSwitch>
+                <input
+                  type="checkbox"
+                  id="accountToggle"
+                  checked={isAccountEnabled}
+                  onChange={handleAccountToggle}
+                />
+                <ToggleSlider htmlFor="accountToggle" />
+              </ToggleSwitch>
+              <AccountStatus>
+                {isAccountEnabled ? "Active" : "Disabled"}
+              </AccountStatus>
+            </AccountOptions>
+          </Main>
+          <Footer>
+            <FooterContent>
+              <FooterLink href="">About Us</FooterLink>
+              <FooterLink href="#">Contact</FooterLink>
+              <FooterLink href="#">Privacy Policy</FooterLink>
+              <FooterLink href="#">Terms of Service</FooterLink>
+            </FooterContent>
+            <Divider />
+            <SocialIcons>
+              <SocialIconLink href="https://www.instagram.com/">
+                <img
+                  src="https://workingwithdog.com/wp-content/uploads/2016/05/new_instagram_logo.jpg"
+                  alt="Instagram Logo"
+                />
+              </SocialIconLink>
+              <SocialIconLink href="https://www.facebook.com/">
+                <img
+                  src="https://upload.wikimedia.org/wikipedia/commons/6/6c/Facebook_Logo_2023.png"
+                  alt="Facebook Logo"
+                />
+              </SocialIconLink>
+              <SocialIconLink href="https://twitter.com/">
+                <img
+                  src="https://freelogopng.com/images/all_img/1690643591twitter-x-logo-png.png"
+                  alt="Twitter Logo"
+                />
+              </SocialIconLink>
+            </SocialIcons>
+            <ContactInfo>All Rights Reserved © 2023</ContactInfo>
+          </Footer>
+        </ProfileContainer>
+      </div>
+    </>
   );
 };
 

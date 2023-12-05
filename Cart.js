@@ -25,7 +25,8 @@ const Price = styled.p`
 `;
 
 const Quantity = styled.p`
-  margin-left: 150px; /* Add left margin for spacing */
+  margin-left: 150px;
+  margin-top: -3px;
 `;
 
 const Cart = ({ cartItems }) => {
